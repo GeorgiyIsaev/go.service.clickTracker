@@ -3,24 +3,31 @@ package clickTracker
 import (
 	"sync"
 	"time"
+
+	"go.service.clickTracker/tracker/clickTracker/storage"
 )
 
 // Структура для хранения кликов
 type ClickTracker struct {
 	mu              sync.RWMutex
 	todayClicks     map[string]map[string]struct{} // authorID -> set of userID
-	yesterdayClicks map[string]map[string]struct{}
-	currentDate     string // "YYYY-MM-DD"
+	yesterdayClicks map[string]int                 //только количество
+	currentDate     string                         // "YYYY-MM-DD"
+	repo            storage.ClickRepository
 }
 
 // Экзмпляр класс ClickTracker
-func NewClickTracker() *ClickTracker {
+func NewClickTracker(repo storage.ClickRepository) *ClickTracker {
 	now := time.Now()
 	return &ClickTracker{
 		todayClicks:     make(map[string]map[string]struct{}),
-		yesterdayClicks: make(map[string]map[string]struct{}),
+		yesterdayClicks: make(map[string]int),
 		currentDate:     now.Format("2006-01-02"),
+		repo:            repo,
 	}
+	//TODO востоновить сосотяние
+	//и статистику за завтра
+
 }
 
 // Регисрация клика пользователя
