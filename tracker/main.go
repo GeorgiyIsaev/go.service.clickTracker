@@ -1,21 +1,20 @@
 package main
 
-import "fmt"
 import (
+	"log"
+	"net/http"
+
 	"go.service.clickTracker/tracker/clickTracker"
+	"go.service.clickTracker/tracker/handler"
 )
 
 func main() {
 	tracker := clickTracker.NewClickTracker()
+	server := handler.NewServer(tracker)
 
-	//Симуляция кликов 1
-	tracker.RecordClick("author_1", "user_1")
-	tracker.RecordClick("author_1", "user_2")
-	tracker.RecordClick("author_1", "user_3")
-	tracker.RecordClick("author_2", "user_1")
-	tracker.RecordClick("author_1", "user_1") //дубль
+	http.HandleFunc("/clickTracker/click", server.HandlerClick)
+	http.HandleFunc("/clickTracker/status", server.HandlerStatus)
 
-	status := tracker.GetAuthorsStatus([]string{"author_1", "author_2", "author_3"})
-	fmt.Println(status)
-
+	log.Println("Listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
