@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	//  1. Конфиг из .env
 	cfg, err := repository.LoadConfig()
 	if err != nil {
