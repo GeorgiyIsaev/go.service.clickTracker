@@ -3,7 +3,10 @@ CREATE TABLE raw_clicks (
                             author_id VARCHAR(255) NOT NULL,
                             user_id VARCHAR(255) NOT NULL,
                             created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-                            UNIQUE(author_id, user_id, created_at::date)  -- один пользователь может кликнуть только раз в сутки
+    -- Отдельная колонка с датой (без времени) для уникальности по суткам
+                            created_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    -- Уникальность: один пользователь может кликнуть автора только раз в сутки
+                            UNIQUE(author_id, user_id, created_date)
 );
 
 CREATE TABLE daily_stats (
